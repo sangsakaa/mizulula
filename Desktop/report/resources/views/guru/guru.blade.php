@@ -1,5 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
+        @section('title', ' | Guru' )
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Dashboard Asrama') }}
         </h2>
@@ -8,21 +9,6 @@
         <div class=" mx-auto ">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-2 bg-white border-b border-gray-200">
-                    <div class=" flex gap-1">
-                        <a href="/addGuru">
-                            <button class=" bg-blue-500 text-white p-1 rounded-md"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            </button>
-                        </a>
-                        <a href="/asramasiswa">
-                            <div class="">
-                                <button class=" bg-blue-500 text-white py-1 px-2 rounded-md d-inline-block">
-                                    Asrama Siswa
-                                </button>
-                            </div>
-                    </div>
-                    </a>
                     @if (session('delete'))
                     <div class=" py-2">
                         <div class=" bg-red-500 px-2 py-1 text-white">
@@ -44,7 +30,32 @@
                         </div>
                     </div>
                     @endif
-                    <span>Daftar Nama Dewan Guru </span>
+                    <div class=" grid gap-1 grid-cols-2 w-full ">
+                        <div class=" flex  w-full">
+                            <form action="/guru" method="get" class=" flex gap-1">
+                                <input type="text" name="cari" value="{{ request('cari') }}" class=" border text-green-800 rounded-sdm py-1 " placeholder=" Cari ...">
+
+                                <button type="submit" class=" px-2   bg-blue-500  rounded-md text-white">
+                                    Cari </button>
+                            </form>
+                        </div>
+                        <div class=" flex gap-2 justify-end w-full ">
+                            <a href="/addGuru">
+                                <button class=" bg-blue-500 text-white p-1 rounded-md"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </button>
+                            </a>
+                            <a href="/asramasiswa">
+                                <div class="">
+                                    <button class=" bg-blue-500 text-white py-1 px-2 rounded-md d-inline-block">
+                                        Asrama Siswa
+                                    </button>
+                                </div>
+
+                            </a>
+                        </div>
+                    </div>
                     <Table class=" w-full ">
                         <thead class=" bg-gray-50">
                             <tr class=" border  ">
@@ -100,6 +111,11 @@
                                 </td>
                             </tr>
                             @endif
+                            <tr>
+                                <td colspan="9">
+                                    {{$dataGuru->links()}}
+                                </td>
+                            </tr>
                         </tbody>
                     </Table>
                 </div>

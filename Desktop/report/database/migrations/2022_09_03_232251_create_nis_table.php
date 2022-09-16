@@ -13,10 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('kelas', function (Blueprint $table) {
+        Schema::create('nis', function (Blueprint $table) {
             $table->id();
-            $table->string('kelas');
-            $table->unsignedBigInteger('periode_id');
+            $table->unsignedBigInteger('siswa_id');
+            $table->string('nis');
+            $table->string('madrasah_diniyah');
+            $table->string('nama_lembaga');
+            $table->date('tanggal_masuk');
             $table->timestamps();
         });
     }
@@ -28,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kelas');
+        Schema::dropIfExists('nis');
     }
 };

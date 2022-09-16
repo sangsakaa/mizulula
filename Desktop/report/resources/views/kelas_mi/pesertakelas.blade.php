@@ -1,20 +1,25 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Dashboard Kelas : {{$datakelasmi->kelas}}
+            Dashboard Kelas : {{$datakelasmi->nama_kelas}}
+
         </h2>
     </x-slot>
     <div class="px-4 py-2">
         <div class=" mx-auto ">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-2 bg-white border-b border-gray-200">
-
-                    <div class=" grid grid-cols-4">
+                    <div class=" grid grid-cols-8">
                         <div>Kelas</div>
-                        <div>: {{$datakelasmi->kelas}}</div>
+                        <div>: {{$datakelasmi->nama_kelas}}</div>
                         <div>Kuota</div>
                         <div>: {{$datakelasmi->kuota}}</div>
+                        <div>Jumlah Peserta</div>
+                        <div>: {{$hitung}}</div>
+                        <div>Sisa Kuota Kelas</div>
+                        <div>: {{($datakelasmi->kuota)-$hitung}}</div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -24,6 +29,9 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-2 bg-white border-b border-gray-200">
                     <div class=" grid grid-cols-1 gap-1 py-1 justify-items-end">
+
+                    </div>
+                    <div class=" grid grid-cols-2">
                         <div>
                             <a href="/pesertakolektif">
                                 <button class=" bg-blue-600 text-white rounded-sm px-2 py-1 "> Kolektif</button>
@@ -32,15 +40,24 @@
                                 <button class=" bg-blue-600 text-white rounded-sm px-2 py-1 "> Kembali</button>
                             </a>
                         </div>
-                    </div>
+                        <div class="grid justify-items-end">
+                            <form action="/pesertakelas/{{$datakelasmi->id}}" method="get" class=" flex gap-1">
+                                <input type="text" name="cari" value="{{ request('cari') }}" class=" border text-green-800 rounded-sdm py-1 " placeholder=" Cari ...">
 
+                                <button type="submit" class=" px-2   bg-blue-500  rounded-md text-white">
+                                    Cari </button>
+                            </form>
+                        </div>
+                    </div>
                     <Table class=" table w-full">
                         <thead>
                             <tr class="border">
                                 <th class=" px-2 border text-center  ">#</th>
+                                <th class=" px-2 border text-center">Nomor Induk Siswa </th>
                                 <th class=" px-2 border text-left">Daftar Peserta </th>
                                 <th class=" px-2 border text-left"> Kota Asal </th>
                                 <th class=" px-2 border text-center"> Kelas </th>
+                                <th class=" px-2 border text-center"> Nama Kelas </th>
                                 <th class=" px-2 border text-center">Aksi</th>
                             </tr>
                         </thead>
@@ -51,6 +68,9 @@
                                 <td class=" border px-2 w-10">
                                     {{$loop->iteration}}
                                 </td>
+                                <td class=" border px-2 text-center w-50">
+                                    {{$list->nis}}
+                                </td>
                                 <td class=" border px-2">
                                     {{$list->nama_siswa}}
                                 </td>
@@ -59,6 +79,9 @@
                                 </td>
                                 <td class=" border px-2 text-center ">
                                     {{$list->kelas}}
+                                </td>
+                                <td class=" border px-2 text-center ">
+                                    {{$list->nama_kelas}}
                                 </td>
                                 <td class=" border px-2 w-5">
                                     <form action="/pesertakelas/{{$list->id}}" method="post">
@@ -74,11 +97,16 @@
                             @endforeach
                             @else
                             <tr>
-                                <td class=" border text-center" colspan="4">
+                                <td class=" border text-center" colspan="7">
                                     Tidak ada Data ditemukan !!!
                                 </td>
                             </tr>
                             @endif
+                            <tr>
+                                <td colspan="7" class="py-1">
+                                    {{$dataKelas->links()}}
+                                </td>
+                            </tr>
                         </tbody>
                     </Table>
 

@@ -13,10 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('periode', function (Blueprint $table) {
+        Schema::create('nilai', function (Blueprint $table) {
             $table->id();
-            $table->string('periode');
-            $table->string('ket_periode');
+            $table->unsignedBigInteger('pesertakelas_id');
+            $table->unsignedBigInteger('nilaimapel_id');
+            $table->unsignedBigInteger('semester_id');
+            $table->integer('nilai_harian')->nullable();
+            $table->integer('nilai_ujian')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('periode');
+        Schema::dropIfExists('nilai');
     }
 };

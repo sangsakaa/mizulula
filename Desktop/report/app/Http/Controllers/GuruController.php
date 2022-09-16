@@ -16,8 +16,16 @@ class GuruController extends Controller
      */
     public function index()
     {
-        $dataGuru = Guru::all();
-        return view('guru/guru', ['dataGuru' => $dataGuru]);
+        $data = Guru::latest();
+        if (request('cari')) {
+            $data->where('nama_guru', 'like', '%' . request('cari') . '%')->orderby('nama_guru');
+            // ->orWhere('Kota_asal', 'like', '%' . request('cari') . '%')
+            // ->orWhere('nama_kelas', 'like', '%' . request('cari') . '%')
+            // ->orWhere('nis', 'like', '%' . request('cari') . '%')
+            // ->orWhere('tanggal_masuk', 'like', '%' . request('cari') . '%')
+            // ->orderBy('nis', 'asc');
+        }
+        return view('guru/guru', ['dataGuru' => $data->paginate(10)]);
     }
 
     /**

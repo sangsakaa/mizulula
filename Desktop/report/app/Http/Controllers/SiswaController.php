@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Nis;
 use App\Models\Kelas;
+use App\Models\Nilai;
 use App\Models\Siswa;
 use App\Models\Pesertakelas;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
 
 class SiswaController extends Controller
 {
@@ -17,14 +20,37 @@ class SiswaController extends Controller
      */
     public function index()
     {
-        $data = Siswa::latest()->orderBy('nama_siswa');
+        $data = Siswa::query()
+            ->leftjoin('nis', 'nis.siswa_id', '=', 'siswa.id')
+            ->leftjoin('pesertaasrama', 'pesertaasrama.siswa_id', '=', 'siswa.id')
+            ->leftjoin('asramasiswa', 'asramasiswa.id', '=', 'pesertaasrama.asramasiswa_id')
+            ->leftjoin('asrama', 'asrama.id', '=', 'asramasiswa.asrama_id')
+            ->leftjoin('pesertakelas', 'pesertakelas.siswa_id', '=', 'siswa.id')
+            ->leftjoin('kelasmi', 'kelasmi.id', '=', 'pesertakelas.kelasmi_id')
+            ->orderBy('nis')
+            // ->orderBy('nama_siswa')
+
+            ->select(
+                [
+                    'nis.nis',
+                    'nis.tanggal_masuk',
+                    'siswa.id',
+                    'siswa.nama_siswa',
+                    'siswa.jenis_kelamin',
+                    'siswa.tempat_lahir',
+                    'siswa.tanggal_lahir',
+                    'kelasmi.nama_kelas',
+                    'asrama.nama_asrama'
+                ]
+            );
+            // ->latest()->orderBy('nama_siswa');
         if (request('cari')) {
             $data->where('nama_siswa', 'like', '%' . request('cari') . '%')
-                // ->orWhere('jk', 'like', '%' . request('cari') . '%')
-                // ->orWhere('tanggal_masuk', 'like', '%' . request('cari') . '%')
                 ->orWhere('Kota_asal', 'like', '%' . request('cari') . '%')
-                // ->orderby('tanggal_masuk')
-                ->orderBy('nama_siswa');
+            ->orWhere('nama_kelas', 'like', '%' . request('cari') . '%')
+            ->orWhere('nis', 'like', '%' . request('cari') . '%')
+            ->orWhere('tanggal_masuk', 'like', '%' . request('cari') . '%')
+            ->orderBy('nis', 'asc');
         }
         return view('siswa/siswa', ['dataSiswa' => $data->paginate(20)]);
     }
@@ -48,11 +74,13 @@ class SiswaController extends Controller
      */
     public function store(Request $request)
     {
-        // $siswa = $request->validate(
-        //     [
-        //         'nama_siswa' => 'required',
-        //     ]
-        // );
+        $validated = $request->validate([
+            'nama_siswa' => 'required|min:5|max:25',
+
+        ], [
+            'nama_siswa.min' => 'tidak boleh kurang dari 2 karakter',
+            'nama_siswa.max' => 'tidak boleh lebih dari 3 karakter'
+        ]);
         $siswa = new Siswa();
         $siswa->nama_siswa = $request->nama_siswa;
         $siswa->jenis_kelamin = $request->jenis_kelamin;
@@ -61,7 +89,25 @@ class SiswaController extends Controller
         $siswa->tanggal_lahir = $request->tanggal_lahir;
         $siswa->kota_asal = $request->kota_asal;
         $siswa->save();
+        
+
         return redirect('siswa')->with('success', 'data berhasil ditambahkan');
+    }
+    public function storeNis(Request $request)
+    {
+        // $siswa = $request->validate(
+        //     [
+        //         'nama_siswa' => 'required',
+        //     ]
+        // );
+        $nis = new nis();
+        $nis->siswa_id = $request->siswa_id;
+        $nis->nis = $request->nis;
+        $nis->nama_lembaga = $request->nama_lembaga;
+        $nis->madrasah_diniyah = $request->madrasah_diniyah;
+        $nis->tanggal_masuk = $request->tanggal_masuk;
+        $nis->save();
+        return redirect()->back();
     }
     /**
      * Display the specified resource.
@@ -69,13 +115,22 @@ class SiswaController extends Controller
      * @param  \App\Models\Siswa  $siswa
      * @return \Illuminate\Http\Response
      */
-    public function show(Siswa $siswa)
+    public function show(Siswa $siswa, Pesertakelas $pesertakelas)
     {
-        return view('siswa/detailSiswa', ['siswa' => $siswa]);
+        $pes = Nilai::Find($pesertakelas)->first();
+        return view('siswa/detailSiswa', ['siswa' => $siswa, 'pesertakelas' => $pes]);
     }
     public function biodata(Siswa $siswa)
     {
-        return view('siswa/biodata', ['siswa' => $siswa]);
+        $data = Siswa::where('siswa.id', $siswa->id)
+            ->leftjoin('nis', 'nis.siswa_id', '=', 'siswa.id')
+            ->first();
+        return view('siswa/biodata', ['siswa' => $data]);
+    }
+    public function nis(Siswa $siswa)
+    {
+        $nisSiswa = Nis::where('siswa_id', $siswa->id)->get();
+        return view('siswa/nisSiswa', ['siswa' => $siswa, 'nis' => $nisSiswa]);
     }
     public function DetailKelas(Siswa $siswa, Kelas $kelas)
     {
@@ -90,6 +145,15 @@ class SiswaController extends Controller
             // ->where('Pesertakelas.siswa_id', $siswa->id)
             ->get();
         return view('siswa/detailSiswa', ['detailKelas' => $data, 'siswa' => $siswa, 'dataKelas' => $dataKelas]);
+    }
+    public function transkip(Pesertakelas $pesertakelas)
+    {
+        $transkip = Nilai::query()
+            ->join('nilaimapel', 'nilaimapel.id', '=', 'nilai.nilaimapel_id')
+            ->join('mapel', 'nilaimapel.mapel_id', '=', 'mapel.id')
+            // ->select('nilai.nilaimapel_id')
+            ->find($pesertakelas)->first();
+        return view('siswa/transkip', ['siswa' => $transkip,]);
     }
 
     /**
@@ -134,5 +198,11 @@ class SiswaController extends Controller
     {
         Siswa::destroy($siswa->id);
         return redirect()->back()->with('delete', 'data berhasil dihapus');
+    }
+    public function destroyNis(Nis $nis)
+    {
+        // dd($nis);
+        Nis::destroy($nis->id);
+        return redirect()->back();
     }
 }

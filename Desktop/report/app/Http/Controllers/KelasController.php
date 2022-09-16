@@ -22,9 +22,6 @@ class KelasController extends Controller
     {
 
         $dataKelas = Kelas::query()
-            ->join('periode', 'periode.id', '=', 'kelas.periode_id')
-            ->select('kelas.id', 'kelas.kelas', 'periode.periode', 'periode.ket_periode')
-
             ->get();
         return view('kelas/kelas', ['DataKelas' => $dataKelas]);
     }
@@ -56,7 +53,6 @@ class KelasController extends Controller
     {
         $kelas = new Kelas();
         $kelas->kelas = $request->kelas;
-        $kelas->periode_id = $request->periode_id;
         $kelas->save();
         return redirect()->back();
     }
@@ -78,9 +74,9 @@ class KelasController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Kelas $kelas)
     {
-        //
+        return view('kelas/editkelas', ['kelas' => $kelas]);
     }
 
     /**
@@ -109,17 +105,26 @@ class KelasController extends Controller
     public function pesertakolektif()
     {
         $kelas = Kelasmi::query()
-            ->join('kelas', 'kelas.id', '=', 'kelasmi.kelas_id')
             ->join('periode', 'periode.id', '=', 'kelasmi.periode_id')
-            ->select('kelasmi.id', 'kelas.kelas', 'periode.periode', 'periode.ket_periode')
-            ->get();
-
+        ->join('semester', 'semester.id', '=', 'periode.semester_id')
+        ->join('kelas', 'kelas.id', '=', 'kelasmi.kelas_id')
+        ->select('kelasmi.id', 'nama_kelas', 'kelas.kelas', 'kelasmi.kuota', 'periode.periode', 'semester.ket_semester')
+        ->get();
         $Datasiswa = Siswa::query()
+            ->join('nis', 'siswa.id', '=', 'nis.siswa_id')
+            ->join('pesertaasrama', 'siswa.id', '=', 'pesertaasrama.siswa_id')
+            ->join('asramasiswa', 'asramasiswa.id', '=', 'pesertaasrama.asramasiswa_id')
+            ->join('asrama', 'asrama.id', '=', 'asramasiswa.asrama_id')
             ->orderBy('jenis_kelamin')
-            ->orderBy('nama_siswa')
-            ->select('siswa.*')
-            ->get();
-        return view('kelas_mi/pesertakolektif', ['Datasiswa' => $Datasiswa, 'kelas' => $kelas]);
+        ->select('siswa.*', 'nis.nis', 'nis.tanggal_masuk', 'asrama.nama_asrama')
+        ->orderBy('nis')->get();
+        return view(
+            'kelas_mi/pesertakolektif',
+            [
+                'Datasiswa' => $Datasiswa,
+                'kelas' => $kelas
+            ]
+        );
     }
     public function StoreKolektif(Request $request)
     {

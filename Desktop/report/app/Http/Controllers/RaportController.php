@@ -51,11 +51,13 @@ class RaportController extends Controller
     {
         $siswa = Pesertakelas::query()
             ->join('siswa', 'pesertakelas.siswa_id', '=', 'siswa.id')
+            ->join('nis', 'nis.siswa_id', '=', 'siswa.id')
             ->join('kelasmi', 'kelasmi.id', '=', 'pesertakelas.kelasmi_id')
             ->join('kelas', 'kelas.id', '=', 'kelasmi.kelas_id')
             ->join('periode', 'periode.id', '=', 'kelasmi.periode_id')
-            ->join('semester', 'semester.id', '=', 'kelasmi.periode_id')
-            ->select('kelas.kelas', 'siswa.nama_siswa', 'periode.periode', 'periode.ket_periode', 'semester.semester')
+            ->join('semester', 'semester.id', '=', 'periode.semester_id')
+            // ->join('semester', 'semester.id', '=', 'kelasmi.periode_id')
+            // ->select('kelas.kelas', 'siswa.nama_siswa', 'periode.periode', 'periode.ket_periode', 'semester.semester')
             ->where('pesertakelas.id', $pesertakelas->id)->first();
         $dataraport = Nilaimapel::query()
             ->join('nilai', 'nilai.nilaimapel_id', '=', 'nilaimapel.id')

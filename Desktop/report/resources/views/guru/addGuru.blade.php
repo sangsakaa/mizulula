@@ -38,7 +38,7 @@
 
                                 <div class=" flex grid-cols-2 gap-2 py-2">
                                     <button class=" bg-blue-600 text-white rounded-md px-2 py-1"> simpan</button>
-                                    <a href="/kelas" class=" bg-blue-600 text-white rounded-md px-2 py-1">Kembali</a>
+                                    <a href="/guru" class=" bg-blue-600 text-white rounded-md px-2 py-1">Kembali</a>
 
                                 </div>
                             </div>

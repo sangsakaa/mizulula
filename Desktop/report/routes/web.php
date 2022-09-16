@@ -12,6 +12,7 @@ use App\Http\Controllers\AsramaSiswaController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\MapelController;
 use App\Http\Controllers\RaportController;
+use App\Http\Controllers\SesiasramaController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -22,14 +23,19 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['au
 Route::get('siswa', [SiswaController::class, 'index'])->middleware(['auth'])->name('siswa');
 Route::get('siswa/{siswa}', [SiswaController::class, 'show']);
 Route::get('biodata/{siswa}', [SiswaController::class, 'biodata']);
+Route::get('transkip/{pesertakelas}', [SiswaController::class, 'transkip']);
+Route::get('nis/{siswa}', [SiswaController::class, 'nis']);
 Route::get('addsiswa', [SiswaController::class, 'create']);
 Route::post('siswa', [SiswaController::class, 'store']);
+Route::post('nis/{siswa}', [SiswaController::class, 'storeNis']);
 Route::delete('siswa/{siswa}', [SiswaController::class, 'destroy']);
+Route::delete('nis/{nis}', [SiswaController::class, 'destroyNis']);
 Route::get('siswa/{siswa}/edit', [SiswaController::class, 'edit']);
 Route::patch('siswa/{siswa}', [SiswaController::class, 'update']);
 
 Route::get('kelas', [KelasController::class, 'index'])->middleware(['auth'])->name('kelas');
 Route::get('addkelas', [KelasController::class, 'create'])->middleware(['auth'])->name('addkelas');
+Route::get('kelas/{kelas}/edit', [KelasController::class, 'edit'])->middleware(['auth']);
 Route::post('kelas', [KelasController::class, 'store'])->middleware(['auth'])->name('kelas');
 Route::delete('kelas/{kelas}', [KelasController::class, 'destroy'])->middleware(['auth']);
 Route::post('pesertakolektif', [KelasController::class, 'StoreKolektif'])->middleware(['auth'])->name('pesertakolektif');
@@ -57,6 +63,8 @@ Route::get('addasrama', [AsramaController::class, 'create'])->middleware(['auth'
 // Controller Asrama Siswa
 Route::get('asramasiswa', [AsramaSiswaController::class, 'index'])->middleware(['auth'])->name('asramasiswa');
 Route::post('asramasiswa', [AsramaSiswaController::class, 'store'])->middleware(['auth']);
+Route::patch('asramasiswa/{asramasiswa}', [AsramaSiswaController::class, 'update']);
+Route::get('asramasiswa/{asramasiswa}/edit', [AsramaSiswaController::class, 'edit'])->middleware(['auth']);
 Route::get('addasramasiswa', [AsramaSiswaController::class, 'create'])->middleware(['auth']);
 Route::get('pesertaasrama/{asramasiswa}', [AsramaSiswaController::class, 'show'])->middleware(['auth']);
 Route::delete('asramasiswa/{asramasiswa}', [AsramaSiswaController::class, 'destroy'])->middleware(['auth']);
@@ -81,5 +89,17 @@ Route::post('mapel', [MapelController::class, 'store'])->middleware(['auth']);
 
 // Controller Pengaturan
 Route::get('pengaturan', [PengaturanController::class, 'pengaturan'])->middleware(['auth'])->name('pengaturan');
+Route::get('semester', [PengaturanController::class, 'semester'])->middleware(['auth'])->name('semester');
+Route::get('periode', [PengaturanController::class, 'periode'])->middleware(['auth'])->name('periode');
+Route::post('periode', [PengaturanController::class, 'storeperiode'])->middleware(['auth']);
+Route::delete('periode/{periode}', [PengaturanController::class, 'deleteperiode'])->middleware(['auth']);
+
+// Controller Sesi Asrama
+
+Route::get('sesiasrama', [SesiasramaController::class, 'index'])->middleware(['auth'])->name('sesiasrama');
+Route::get('sesiasrama/{sesiasrama}', [SesiasramaController::class, 'show'])->middleware(['auth']);
+Route::post('sesiasrama', [SesiasramaController::class, 'store'])->middleware(['auth']);
+Route::post('sesiasrama/presensi', [SesiasramaController::class, 'simpanpresensi'])->middleware(['auth']);
+Route::delete('sesiasrama/{sesiasrama}', [SesiasramaController::class, 'destroy'])->middleware(['auth']);
 
 require __DIR__ . '/auth.php';

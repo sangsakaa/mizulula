@@ -1,5 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
+        @section('title', ' | Raport' )
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Dashboard Report') }}
         </h2>
@@ -28,22 +29,17 @@
                             }
                         </script>
                         <span class=" font-semibold "> DAFTAR NILAI HASIL TADRIS</span>
-                        <span class=" font-semibold"> MADRASAH DINIY AH WUSTHO WAHIDIYAH</span>
+                        <span class=" font-semibold"> MADRASAH DINIYAH WUSTHO WAHIDIYAH</span>
                     </div>
                     <hr>
 
                     <div class=" text-1xl py-2 grid  grid-cols-2 w-full">
+
                         <div>
                             Nomor Induk Siswa
                         </div>
                         <div>
-                            : <span class=" font-semibold">2020120001</span>
-                        </div>
-                        <div>
-                            Kelas / Semester
-                        </div>
-                        <div>
-                            : {{$siswa->kelas}} / {{$siswa->semester}}
+                            : <span class=" font-semibold">{{$siswa->nis}}</span>
                         </div>
                         <div class=" w-40">
                             Nama Lengkap
@@ -52,10 +48,27 @@
                             : {{$siswa->nama_siswa}}
                         </div>
                         <div>
+                            Tempa ,Tanggal Lahir
+                        </div>
+                        <div>
+                            : {{$siswa->tempat_lahir}}, <?php
+                                                        $date = date_create($siswa->tanggal_lahir);
+                                                        echo date_format($date, "d-M-Y");
+                                                        ?></p>
+                        </div>
+                        <div>
+                            Marhalah
+                        </div>
+                        <div>
+
+                            : {{$siswa->kelas}} / {{$siswa->madrasah_diniyah}}
+                        </div>
+
+                        <div>
                             Periode
                         </div>
                         <div>
-                            : {{$siswa->periode}} {{$siswa->ket_periode}}
+                            : {{$siswa->periode}} {{$siswa->ket_periode}} {{$siswa->ket_semester}}
                         </div>
 
 
@@ -107,7 +120,7 @@
                         </tr>
                         <tr>
                             <td class=" px-2 border text-right font-semibold" colspan="3">Al Bayan</td>
-                            <td class=" px-2 border text-center">Naik</td>
+                            <td class=" px-2 border text-center">Naik / Tidak Naik</td>
                             <td class=" px-2 border text-center">-</td>
                         </tr>
                     </table>
@@ -116,8 +129,8 @@
                     <table class=" w-full">
                         <thead class=" bg-gray-100  border text-sm">
                             <tr class=" px-2" class=" border text-sm">
-                                <th class="border px-2" rowspan="2">#</th>
-                                <th class="border px-2"> Al Amaliyyah</th>
+                                <th class="border px-2">No</th>
+                                <th class="border px-2 w-50"> Al Amaliyyah</th>
                                 <th class="border px-2 w-5 text-sm">Attaqdir Al Mukhutasab</th>
                                 <th class="border px-2">Al Bayan</th>
                             </tr>
@@ -179,7 +192,7 @@
                     <table class=" w-1/3 ">
                         <thead class=" bg-gray-100  border">
                             <tr class=" px-2" class=" border">
-                                <th class="border px-2 w-5">#</th>
+                                <th class="border px-2 w-5">No</th>
 
                                 <th class="border px-2">KETERANGAN</th>
                                 <th class="border px-2 w-5">JML</th>
@@ -190,12 +203,12 @@
                             <tr class=" border">
                                 <td class=" px-2 border ">1</td>
                                 <td class=" px-2 border ">IZIN</td>
-                                <td class=" px-2 border "> 2</td>
+                                <td class=" px-2 border text-center "> 2</td>
                             </tr>
                             <tr class=" border">
                                 <td class=" px-2 border ">2</td>
                                 <td class=" px-2 border ">SAKIT</td>
-                                <td class=" px-2 border ">3</td>
+                                <td class=" px-2 border text-center ">3</td>
 
                             </tr>
                             <tr class=" border">
@@ -205,14 +218,18 @@
                             </tr>
                         </tbody>
                     </table>
-
-
-
-                    <div class=" text-right">
-                        Kedurglo,<br>
-                        Al Mudir/Kepala <br><br><br>
-                        Muh. Babrul Ulum, S.H
+                    <div class="  flex grid-cols-2 text-right">
+                        <div class=" w-2/3"></div>
+                        <div class="  text-left">
+                            Kedunglo, <?php
+                                        $date = date_create(now());
+                                        echo date_format($date, "d-M-Y");
+                                        ?></p>
+                            Al Mudir / Kepala <br><br><br><br>
+                            Muh. Babrul Ulum, S.H
+                        </div>
                     </div>
+
                 </div>
             </div>
         </div>

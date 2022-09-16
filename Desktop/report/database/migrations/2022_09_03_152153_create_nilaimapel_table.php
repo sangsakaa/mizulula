@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::create('nilaimapel', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('semester_id');
             $table->unsignedBigInteger('mapel_id');
             $table->unsignedBigInteger('kelasmi_id');
             $table->unsignedBigInteger('guru_id');

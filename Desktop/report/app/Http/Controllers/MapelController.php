@@ -21,6 +21,8 @@ class MapelController extends Controller
         $Pelajara = Mapel::query()
             ->leftjoin('kelas', 'kelas.id', '=', 'mapel.kelas_id')
             ->select('mapel.*', 'kelas.kelas')
+            ->OrderBy('kelas')
+            ->OrderBy('mapel')
             ->get();
         return view(
             'mapel/mapel',

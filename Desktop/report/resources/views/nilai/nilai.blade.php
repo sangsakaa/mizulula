@@ -13,9 +13,17 @@
                         <div class=" px-4 py-1">
                             <span class=" text-2xl  text-blue-400">Input Nilai</span>
                         </div>
-
                         <hr>
+
                         <div class=" grid grid-cols-4 px-4 py-2">
+                            <div>Kelas / Semester</div>
+                            <div> : {{$titlenilai->nama_kelas}} / {{$titlenilai->semester}}</div>
+                            <div>Mata Pelajaran</div>
+                            <div> : {{$titlenilai->mapel}} / {{$titlenilai->nama_kitab}}</div>
+                            <div>Guru</div>
+                            <div> : {{$titlenilai->nama_guru}}</div>
+                            <div>Periode</div>
+                            <div> : {{$titlenilai->periode}} {{$titlenilai->ket_semester}}</div>
                         </div>
                     </div>
                 </div>
@@ -39,10 +47,12 @@
                                 <thead>
                                     <tr class="border">
                                         <th class=" border px-1">#</th>
-                                        <th class=" border px-1 w-1/2">NAMA SISWA</th>
+                                        <th class=" border px-1 w-1/7 ">Nomor Induk Siswa</th>
+                                        <th class=" border px-1 ">NAMA SISWA</th>
                                         <th class=" border px-1">KELAS</th>
-                                        <th class=" border px-1">Nilai Harian</th>
-                                        <th class=" border px-1">Nilai Ujian</th>
+                                        <th class=" border px-1">NAMAKELAS</th>
+                                        <th class=" border px-1 ">NILAI HARIAN</th>
+                                        <th class=" border px-1">NILAI UJIAN</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -52,6 +62,10 @@
                                             {{$loop->iteration}}
                                             <input type="hidden" name="pesertakelas[]" value="{{$item->id}}">
                                             <input type="hidden" name="nilai_id[{{$item->id}}]" value="{{$item->nilai_id}}">
+                                            <input type="hidden" name="semester_id" value="{{$item->id}}">
+                                        </td>
+                                        <td class=" px-2 border text-center ">
+                                            {{$item->nis}}
                                         </td>
                                         <td class=" px-2 border ">
                                             {{$item->nama_siswa}}
@@ -59,11 +73,14 @@
                                         <td class=" px-2 border text-center ">
                                             {{$item->kelas}}
                                         </td>
-                                        <td class=" px-1 border text-center w-1/6">
-                                            <input value="{{$item->nilai_harian}}" class="py-1 w-full" type="number" name="nilai_harian[{{$item->id}}]" default="0" placeholder="min: 50 max:100">
+                                        <td class=" px-2 border text-center ">
+                                            {{$item->nama_kelas}}
                                         </td>
-                                        <td class=" px-1 border text-center w-1/6">
-                                            <input value="{{$item->nilai_ujian}}" class="py-1 w-full" type="number" name="nilai_ujian[{{$item->id}}]" placeholder="min: 50 max:100">
+                                        <td class="  border text-center w-50">
+                                            <input value="{{$item->nilai_harian}}" class=" py-1 w-full text-center" type="number" name="nilai_harian[{{$item->id}}]" default="0" placeholder="min: 50 max:100">
+                                        </td>
+                                        <td class="  border text-center w-50">
+                                            <input value="{{$item->nilai_ujian}}" class="py-1 w-full text-center" type="number" name="nilai_ujian[{{$item->id}}]" placeholder="min: 50 max:100">
                                         </td>
 
                                     </tr>
